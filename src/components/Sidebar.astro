@@ -86,6 +86,19 @@ const isActive = (path: string) => pathname.startsWith(path);
 
         <!-- Mobile Navigation Links -->
 
+        <!-- Mobile Only: About Link -->
+        <div class="sidebar-section mobile-only-section">
+            <h3>
+                <a
+                    href="/about"
+                    class:list={[
+                        "sidebar-link",
+                        { active: isActive("/about") },
+                    ]}>About</a
+                >
+            </h3>
+        </div>
+
         <!-- Categories: Desktop Only -->
         <div class="sidebar-section categories-section">
             <h3>
@@ -197,10 +210,17 @@ const isActive = (path: string) => pathname.startsWith(path);
             display: block;
         }
 
+        .mobile-only-section {
+            display: none;
+        }
+
         /* Mobile specific styles handled by global.css via .sidebar-container off-canvas */
         @media (max-width: 900px) {
             .sidebar {
                 max-width: 100%;
+            }
+            .mobile-only-section {
+                display: block;
             }
         }
 
