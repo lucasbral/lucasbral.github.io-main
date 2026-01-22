@@ -2,6 +2,8 @@
 import Layout from "./Layout.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Sidebar from "../components/Sidebar.astro";
+import RightSidebar from "../components/RightSidebar.astro";
+import ViewCounter from "../components/ViewCounter.astro";
 import type { CollectionEntry } from "astro:content";
 
 type Props = CollectionEntry<"blog">["data"];
@@ -18,12 +20,12 @@ const heroImage = typeof image === "object" ? image.path : image;
 	image={heroImage}
 	fullWidth={true}
 >
-	<div class="page-layout">
-		<aside class="sidebar-container">
+	<div class="blog-page-layout">
+		<aside class="left-sidebar sidebar-container">
 			<Sidebar />
 		</aside>
 
-		<article class="fade-in">
+		<article class="fade-in main-content">
 			{
 				heroImage && (
 					<div class="hero-image">
@@ -35,6 +37,7 @@ const heroImage = typeof image === "object" ? image.path : image;
 				<div class="title">
 					<div class="date">
 						<FormattedDate date={date} />
+						<span class="date-separator">•</span>
 						{
 							updatedDate && (
 								<div class="last-updated-on">
@@ -43,6 +46,9 @@ const heroImage = typeof image === "object" ? image.path : image;
 								</div>
 							)
 						}
+						<div class="view-count">
+							<ViewCounter />
+						</div>
 					</div>
 					<h1>{title}</h1>
 					<hr />
@@ -50,13 +56,78 @@ const heroImage = typeof image === "object" ? image.path : image;
 				<slot />
 			</div>
 		</article>
+
+		<!-- Right Sidebar (Desktop Only) -->
+		<aside class="right-sidebar-container">
+			<RightSidebar />
+		</aside>
 	</div>
 </Layout>
 
-<style>
-	/* Layout Grid */
-	/* .page-layout handled in global.css */
-	/* .sidebar-container handled in global.css */
+<style is:global>
+	/* 3-Column Grid Layout */
+	.blog-page-layout {
+		display: grid;
+		grid-template-columns: 280px 1fr 280px; /* Left, Middle, Right */
+		gap: 2rem;
+		width: 100%;
+		max-width: 1400px;
+		margin: 0 auto;
+		padding: 2rem;
+		align-items: start;
+	}
+
+	/* Left Sidebar */
+	.blog-page-layout .left-sidebar {
+		position: sticky;
+		top: 2rem;
+		height: fit-content;
+		border-right: 1px solid var(--color-border);
+		padding-right: 1.5rem;
+	}
+
+	/* Right Sidebar */
+	.blog-page-layout .right-sidebar-container {
+		position: sticky;
+		top: 2rem;
+		height: fit-content;
+		border-left: 1px solid var(--color-border);
+		padding-left: 1.5rem;
+	}
+
+	/* Main Content */
+	.blog-page-layout .main-content {
+		width: 100%;
+		min-width: 0;
+	}
+
+	@media (max-width: 1200px) {
+		.blog-page-layout {
+			grid-template-columns: 280px 1fr;
+			max-width: 1000px;
+		}
+		.blog-page-layout .right-sidebar-container {
+			display: none;
+		}
+		.blog-page-layout .left-sidebar {
+			padding-right: 1.5rem;
+		}
+	}
+
+	@media (max-width: 900px) {
+		.blog-page-layout {
+			display: block;
+			padding: 1rem;
+		}
+
+		.blog-page-layout .left-sidebar {
+			position: fixed !important;
+			top: 0 !important;
+			height: 100vh !important;
+			max-height: 100vh !important;
+			z-index: 1000;
+		}
+	}
 
 	.hero-image {
 		width: 100%;
@@ -88,6 +159,14 @@ const heroImage = typeof image === "object" ? image.path : image;
 	.date {
 		margin-bottom: 0.5em;
 		color: var(--color-secondary);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+	}
+	.date-separator {
+		color: var(--gray-light);
 	}
 	.last-updated-on {
 		font-style: italic;

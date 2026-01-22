@@ -1,0 +1,49 @@
+---
+
+---
+
+<span class="view-counter">
+    <span id="pageviews">
+        <span class="loading">...</span>
+    </span>
+    views
+</span>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const pv = document.getElementById("pageviews");
+
+        if (pv !== null) {
+            // Remove trailing slash for consistency
+            const uri = location.pathname.replace(/\/$/, "");
+            // Construct the URL for the GoatCounter JSON API
+            const url = `https://lucasbral.goatcounter.com/counter/${encodeURIComponent(uri)}.json`;
+
+            fetch(url)
+                .then((response) => response.json())
+                .then((data) => {
+                    // Extract numeric count and format it
+                    const count = data.count.replace(/\D/g, "");
+                    pv.innerText = new Intl.NumberFormat().format(count);
+                })
+                .catch((error) => {
+                    console.error("Error fetching page views:", error);
+                    pv.innerText = "0"; // Fallback on error
+                });
+        }
+    });
+</script>
+
+<style>
+    .view-counter {
+        color: var(--gray);
+        font-size: 0.9em;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3em;
+    }
+
+    .loading {
+        opacity: 0.5;
+    }
+</style>
