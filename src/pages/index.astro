@@ -1,0 +1,230 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "../components/FormattedDate.astro";
+import Sidebar from "../components/Sidebar.astro";
+import RightSidebar from "../components/RightSidebar.astro";
+
+const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<Layout fullWidth={true}>
+    <div class="page-layout">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar sidebar-container">
+            <Sidebar />
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <section class="intro fade-in">
+                <h1>👋 Hello, I'm Lucas Sobral</h1>
+                <p>
+                    Welcome to my personal blog. I write about data analysis,
+                    systems engineering, and technology. Explore my latest posts
+                    below.
+                </p>
+            </section>
+
+            <section class="posts-grid fade-in">
+                {
+                    posts.map((post) => (
+                        <a href={`/blog/${post.id}/`} class="post-card">
+                            {post.data.image && (
+                                <div class="post-image">
+                                    <img
+                                        src={
+                                            typeof post.data.image === "object"
+                                                ? post.data.image.path
+                                                : post.data.image
+                                        }
+                                        alt=""
+                                    />
+                                </div>
+                            )}
+                            <div class="post-content">
+                                <h3 class="title">{post.data.title}</h3>
+                                <p class="date">
+                                    <FormattedDate date={post.data.date} />
+                                </p>
+                                <p class="description">
+                                    {post.data.description}
+                                </p>
+                            </div>
+                        </a>
+                    ))
+                }
+            </section>
+        </div>
+
+        <!-- Right Sidebar (Desktop Only) -->
+        <aside class="right-sidebar-container">
+            <RightSidebar />
+        </aside>
+    </div>
+</Layout>
+
+<style>
+    /* 3-Column Grid Layout */
+    .page-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr 280px; /* Left, Middle, Right */
+        gap: 2rem;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        align-items: start;
+    }
+
+    /* Left Sidebar */
+    .left-sidebar {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+        border-right: 1px solid var(--color-border);
+        padding-right: 1.5rem;
+    }
+
+    /* Right Sidebar */
+    .right-sidebar-container {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+        border-left: 1px solid var(--color-border);
+        padding-left: 1.5rem;
+    }
+
+    /* Main Content */
+    .main-content {
+        width: 100%;
+        min-width: 0; /* Prevent grid blowout */
+    }
+
+    .intro {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 1rem 0;
+    }
+
+    .posts-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1200px) {
+        .page-layout {
+            grid-template-columns: 280px 1fr; /* Hide right sidebar */
+            max-width: 1000px;
+        }
+
+        .right-sidebar-container {
+            display: none;
+        }
+
+        .left-sidebar {
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .page-layout {
+            grid-template-columns: 1fr; /* Stack everything */
+            padding: 1rem;
+        }
+
+        /* 
+           Force fixed positioning for mobile sidebar to support off-canvas toggle.
+           This overrides the 'sticky' position set above.
+        */
+        .left-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            z-index: 1000; /* Ensure visibility */
+            /* styling handled by global.css sidebar-container, just overriding positioning here */
+        }
+
+        .main-content {
+            order: 1;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .posts-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Card Styles */
+    .post-card {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+        overflow: hidden;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-decoration: none;
+    }
+
+    .post-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .post-image {
+        aspect-ratio: 16/9;
+        overflow: hidden;
+    }
+
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .post-card:hover .post-image img {
+        transform: scale(1.05);
+    }
+
+    .post-content {
+        padding: 1.5rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .title {
+        font-size: 1.25rem;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+        line-height: 1.4;
+    }
+
+    .date {
+        font-size: 0.875rem;
+        color: var(--color-secondary);
+        margin-bottom: 1rem;
+    }
+
+    .description {
+        color: var(--color-secondary);
+        font-size: 1rem;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>

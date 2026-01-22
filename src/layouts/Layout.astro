@@ -1,0 +1,64 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	fullWidth?: boolean;
+}
+
+const {
+	title = SITE_TITLE,
+	description = SITE_DESCRIPTION,
+	image,
+	fullWidth = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+		<script is:inline>
+			// Blocking script to prevent flash of unstyled content (FOUC)
+			const theme = (() => {
+				if (
+					typeof localStorage !== "undefined" &&
+					localStorage.getItem("theme")
+				) {
+					return localStorage.getItem("theme");
+				}
+				if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+					return "dark";
+				}
+				return "light";
+			})();
+
+			if (theme === "dark") {
+				document.documentElement.classList.add("dark");
+			} else {
+				document.documentElement.classList.remove("dark");
+			}
+			// Ensure localStorage is sync'd
+			window.localStorage.setItem("theme", theme);
+		</script>
+	</head>
+	<body>
+		<Header />
+		<main class={fullWidth ? "full-width" : ""}>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main.full-width {
+		max-width: 100% !important;
+		padding: 0 !important;
+	}
+</style>

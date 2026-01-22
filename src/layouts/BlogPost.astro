@@ -1,0 +1,100 @@
+---
+import Layout from "./Layout.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Sidebar from "../components/Sidebar.astro";
+import type { CollectionEntry } from "astro:content";
+
+type Props = CollectionEntry<"blog">["data"];
+
+const { title, description, date, updatedDate, image } = Astro.props;
+
+// Helper to get image src
+const heroImage = typeof image === "object" ? image.path : image;
+---
+
+<Layout
+	title={title}
+	description={description}
+	image={heroImage}
+	fullWidth={true}
+>
+	<div class="page-layout">
+		<aside class="sidebar-container">
+			<Sidebar />
+		</aside>
+
+		<article class="fade-in">
+			{
+				heroImage && (
+					<div class="hero-image">
+						<img width={1020} height={510} src={heroImage} alt="" />
+					</div>
+				)
+			}
+			<div class="prose">
+				<div class="title">
+					<div class="date">
+						<FormattedDate date={date} />
+						{
+							updatedDate && (
+								<div class="last-updated-on">
+									Last updated on{" "}
+									<FormattedDate date={updatedDate} />
+								</div>
+							)
+						}
+					</div>
+					<h1>{title}</h1>
+					<hr />
+				</div>
+				<slot />
+			</div>
+		</article>
+	</div>
+</Layout>
+
+<style>
+	/* Layout Grid */
+	/* .page-layout handled in global.css */
+	/* .sidebar-container handled in global.css */
+
+	.hero-image {
+		width: 100%;
+		margin-bottom: 2rem;
+	}
+	.hero-image img {
+		display: block;
+		margin: 0 auto;
+		border-radius: 12px;
+		box-shadow:
+			0 4px 6px -1px rgba(0, 0, 0, 0.1),
+			0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		width: 100%;
+		height: auto; /* Ensure intrinsic height is respected up to max-height */
+		max-height: 400px;
+		object-fit: cover; /* Crop nicely */
+	}
+	.prose {
+		/* Adjusted to fit within the grid column */
+		width: 100%;
+		max-width: 100%;
+		margin: auto;
+	}
+	.title {
+		margin-bottom: 2rem;
+		text-align: center;
+		line-height: 1;
+	}
+	.date {
+		margin-bottom: 0.5em;
+		color: var(--color-secondary);
+	}
+	.last-updated-on {
+		font-style: italic;
+	}
+	hr {
+		border: 0;
+		border-top: 1px solid var(--color-border);
+		margin: 2rem 0;
+	}
+</style>

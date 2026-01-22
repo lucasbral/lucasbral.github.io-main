@@ -1,0 +1,231 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import RightSidebar from "../../components/RightSidebar.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+
+const posts = (await getCollection("blog")).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+// Group by Year
+const archives: Record<number, typeof posts> = {};
+posts.forEach((post) => {
+    const year = post.data.date.getFullYear();
+    if (!archives[year]) {
+        archives[year] = [];
+    }
+    archives[year].push(post);
+});
+
+const sortedYears = Object.keys(archives)
+    .map(Number)
+    .sort((a, b) => b - a);
+---
+
+<Layout title="Archives" fullWidth={true}>
+    <div class="page-layout">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar sidebar-container">
+            <Sidebar />
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Archives</h1>
+            <div class="timeline">
+                {
+                    sortedYears.map((year) => (
+                        <div class="year-group">
+                            <h2 class="year-heading">{year}</h2>
+                            <div class="posts-in-year">
+                                {archives[year].map((post) => (
+                                    <div class="timeline-item">
+                                        <div class="timeline-date">
+                                            <FormattedDate
+                                                date={post.data.date}
+                                            />
+                                        </div>
+                                        <div class="timeline-marker" />
+                                        <div class="timeline-content">
+                                            <a
+                                                href={`/blog/${post.id}/`}
+                                                class="post-link"
+                                            >
+                                                {post.data.title}
+                                            </a>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- Right Sidebar (Desktop Only) -->
+        <aside class="right-sidebar-container">
+            <RightSidebar />
+        </aside>
+    </div>
+</Layout>
+
+<style>
+    /* 3-Column Grid Layout */
+    .page-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr 280px; /* Left, Middle, Right */
+        gap: 2rem;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        align-items: start;
+    }
+
+    /* Left Sidebar */
+    .left-sidebar {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+        border-right: 1px solid var(--color-border);
+        padding-right: 1.5rem;
+    }
+
+    /* Right Sidebar */
+    .right-sidebar-container {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+        border-left: 1px solid var(--color-border);
+        padding-left: 1.5rem;
+    }
+
+    /* Main Content */
+    .main-content {
+        width: 100%;
+        min-width: 0;
+    }
+
+    @media (max-width: 1200px) {
+        .page-layout {
+            grid-template-columns: 280px 1fr;
+            max-width: 1000px;
+        }
+        .right-sidebar-container {
+            display: none;
+        }
+        .left-sidebar {
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .page-layout {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+
+        .left-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            z-index: 1000;
+        }
+
+        .main-content {
+            order: 1;
+        }
+    }
+
+    h1 {
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+
+    /* Timeline Styles */
+    /* ... (Rest of existing styles can remain) */
+    .timeline {
+        position: relative;
+        padding-left: 1rem;
+    }
+
+    .year-heading {
+        font-size: 1.8rem;
+        color: var(--color-text);
+        margin: 2rem 0 1rem -1rem; /* Align mostly left */
+        font-weight: bold;
+    }
+
+    .posts-in-year {
+        border-left: 2px solid var(--color-border);
+        margin-left: 0.5rem;
+        padding-left: 1.5rem;
+        padding-bottom: 2rem;
+    }
+
+    .timeline-item {
+        position: relative;
+        display: flex;
+        align-items: baseline;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -1.95rem; /* Adjust to sit on the line */
+        top: 0.4rem;
+        width: 0.8rem;
+        height: 0.8rem;
+        background: var(--color-bg);
+        border: 2px solid var(--accent);
+        border-radius: 50%;
+        z-index: 1;
+    }
+
+    .timeline-date {
+        font-family: monospace;
+        color: var(--gray);
+        font-size: 0.9em;
+        min-width: 100px;
+        text-align: right;
+    }
+
+    .timeline-content {
+        flex: 1;
+    }
+
+    .post-link {
+        text-decoration: none;
+        color: var(--color-text);
+        font-weight: 500;
+        transition: color 0.2s;
+        display: block;
+    }
+
+    .post-link:hover {
+        color: var(--accent);
+    }
+
+    @media (max-width: 600px) {
+        .timeline-item {
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .timeline-date {
+            text-align: left;
+            font-size: 0.8em;
+            margin-bottom: 0.2rem;
+        }
+
+        .timeline-marker {
+            top: 0.2rem;
+        }
+    }
+</style>

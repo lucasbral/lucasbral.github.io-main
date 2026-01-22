@@ -1,0 +1,281 @@
+---
+import { SITE_TITLE } from "../consts";
+import HeaderLink from "./HeaderLink.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+import Search from "./Search.astro";
+---
+
+<header>
+	<nav>
+		<button id="menu-toggle" aria-label="Toggle Menu" class="menu-toggle">
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				width="24"
+				height="24"
+				viewBox="0 0 24 24"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<line x1="3" y1="12" x2="21" y2="12"></line>
+				<line x1="3" y1="6" x2="21" y2="6"></line>
+				<line x1="3" y1="18" x2="21" y2="18"></line>
+			</svg>
+		</button>
+		<h2><a href="/">{SITE_TITLE}</a></h2>
+		<div class="internal-links">
+			<HeaderLink href="/">Home</HeaderLink>
+			<HeaderLink href="/about">About</HeaderLink>
+		</div>
+		<div class="social-links">
+			<a href="https://github.com/lucasbral" target="_blank">
+				<span class="sr-only">GitHub</span>
+				<svg
+					viewBox="0 0 16 16"
+					aria-hidden="true"
+					width="24"
+					height="24"
+					fill="currentColor"
+				>
+					<path
+						d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"
+					></path>
+				</svg>
+			</a>
+			<a href="https://www.linkedin.com/in/lucasbral" target="_blank">
+				<span class="sr-only">LinkedIn</span>
+				<svg
+					viewBox="0 0 24 24"
+					aria-hidden="true"
+					width="24"
+					height="24"
+					fill="currentColor"
+				>
+					<path
+						d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
+					></path>
+				</svg>
+			</a>
+			<Search />
+			<ThemeToggle />
+		</div>
+	</nav>
+</header>
+<style>
+	/* Base Header Styles */
+	header {
+		margin: 0;
+		padding: 0 1rem;
+		background: var(--color-bg);
+		box-shadow: 0 1px 0 var(--color-border);
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		backdrop-filter: blur(8px);
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+
+	:global(.dark) header {
+		background-color: rgba(15, 23, 42, 0.8);
+		border-bottom-color: var(--color-border);
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 1.25rem;
+		font-weight: 700;
+	}
+
+	h2 a,
+	h2 a.active {
+		text-decoration: none;
+		color: var(--color-text);
+	}
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: var(--max-width);
+		margin: 0 auto;
+		height: var(--header-height);
+	}
+	nav a {
+		padding: 0.5rem 0.75rem;
+		color: var(--color-text);
+		text-decoration: none;
+		border-radius: 6px;
+		transition: background-color 0.2s;
+	}
+	nav a:hover {
+		background-color: var(--color-hover);
+		text-decoration: none;
+	}
+	nav a.active {
+		color: var(--color-primary);
+		text-decoration: none;
+		background-color: transparent;
+	}
+	.social-links {
+		display: flex;
+		gap: 0.5rem;
+	}
+</style>
+
+<script is:inline>
+	// Robust Mobile Menu Toggle
+	document.addEventListener("DOMContentLoaded", () => {
+		const menuToggle = document.getElementById("menu-toggle");
+		const body = document.body;
+
+		if (menuToggle) {
+			menuToggle.addEventListener("click", (e) => {
+				e.stopPropagation();
+				e.preventDefault(); // Prevent any default button behavior
+				body.classList.toggle("show-sidebar");
+				console.log(
+					"Menu toggled",
+					body.classList.contains("show-sidebar"),
+				);
+			});
+		}
+
+		// Close on Outside Click
+		document.addEventListener("click", (e) => {
+			const sidebar = document.querySelector(".sidebar-container");
+			const toggle = document.getElementById("menu-toggle");
+
+			if (body.classList.contains("show-sidebar")) {
+				// If click target is NOT in sidebar AND NOT the toggle button
+				if (
+					sidebar &&
+					!sidebar.contains(e.target) &&
+					toggle &&
+					!toggle.contains(e.target)
+				) {
+					body.classList.remove("show-sidebar");
+				}
+			}
+		});
+	});
+</script>
+
+<style>
+	/* Base Header Styles */
+	header {
+		margin: 0;
+		padding: 0 1rem;
+		background: var(--color-bg);
+		box-shadow: 0 1px 0 var(--color-border);
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		backdrop-filter: blur(8px);
+		background-color: rgba(255, 255, 255, 0.8);
+	}
+
+	:global(.dark) header {
+		background-color: rgba(15, 23, 42, 0.8);
+		border-bottom-color: var(--color-border);
+	}
+
+	h2 {
+		margin: 0;
+		font-size: 1.25rem;
+		font-weight: 700;
+	}
+
+	h2 a,
+	h2 a.active {
+		text-decoration: none;
+		color: var(--color-text);
+	}
+
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		max-width: var(--max-width);
+		margin: 0 auto;
+		height: var(--header-height);
+	}
+
+	nav a {
+		padding: 0.5rem 0.75rem;
+		color: var(--color-text);
+		text-decoration: none;
+		border-radius: 6px;
+		transition: background-color 0.2s;
+	}
+
+	nav a:hover {
+		background-color: var(--color-hover);
+		text-decoration: none;
+	}
+
+	nav a.active {
+		color: var(--color-primary);
+		text-decoration: none;
+		background-color: transparent;
+	}
+
+	.social-links {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.internal-links {
+		display: flex;
+		gap: 0.25rem;
+	}
+
+	/* Mobile Menu Toggle */
+	.menu-toggle {
+		display: none; /* Hidden on Desktop */
+		background: none;
+		border: none;
+		padding: 0.5rem;
+		cursor: pointer;
+		color: var(--color-text);
+		border-radius: 6px;
+		transition:
+			background-color 0.2s,
+			color 0.2s;
+	}
+
+	.menu-toggle:hover {
+		background-color: var(--color-hover);
+		color: var(--color-primary);
+	}
+
+	@media (max-width: 900px) {
+		.menu-toggle {
+			display: flex; /* Visible on Mobile */
+			align-items: center;
+			justify-content: center;
+			z-index: 110; /* Ensure it's above other elements */
+			position: relative; /* Context for z-index */
+		}
+
+		nav {
+			justify-content: space-between; /* Spread items out */
+			gap: 0.5rem;
+		}
+
+		.social-links {
+			display: none; /* Hide on mobile, moved to sidebar */
+		}
+
+		/* Hide Internal Links on Mobile, moved to sidebar */
+		.internal-links {
+			display: none;
+		}
+
+		h2 {
+			/* Show Title on Mobile (since links are gone) */
+			display: block;
+			font-size: 1.1rem;
+		}
+	}
+</style>

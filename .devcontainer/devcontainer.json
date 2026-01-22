@@ -1,0 +1,14 @@
+{
+    "name": "Astro Dev",
+    "dockerComposeFile": "docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "astro-build.astro-vscode",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    }
+}

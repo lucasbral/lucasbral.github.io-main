@@ -1,0 +1,254 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Sidebar from "../../components/Sidebar.astro";
+import RightSidebar from "../../components/RightSidebar.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+
+const posts = await getCollection("blog");
+
+// Extract unique categories and group posts
+const categories: Record<string, typeof posts> = {};
+posts.forEach((post) => {
+    if (post.data.categories) {
+        post.data.categories.forEach((category) => {
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push(post);
+        });
+    }
+});
+
+const sortedCategories = Object.keys(categories).sort();
+---
+
+<Layout title="Categories" fullWidth={true}>
+    <div class="page-layout">
+        <!-- Left Sidebar -->
+        <aside class="left-sidebar sidebar-container">
+            <Sidebar />
+        </aside>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h1>Categories</h1>
+            <div class="categories-container">
+                {
+                    sortedCategories.map((category) => (
+                        <details class="category-group">
+                            <summary class="category-name">
+                                <span class="folder-icon">📁</span>
+                                {category}
+                                <span class="count">
+                                    ({categories[category].length})
+                                </span>
+                            </summary>
+                            <ul class="post-list">
+                                {categories[category]
+                                    .sort(
+                                        (a, b) =>
+                                            b.data.date.valueOf() -
+                                            a.data.date.valueOf(),
+                                    )
+                                    .map((post) => (
+                                        <li>
+                                            <a href={`/blog/${post.id}/`}>
+                                                <span class="post-date">
+                                                    <FormattedDate
+                                                        date={post.data.date}
+                                                    />
+                                                </span>
+                                                <span class="post-title">
+                                                    {post.data.title}
+                                                </span>
+                                            </a>
+                                        </li>
+                                    ))}
+                            </ul>
+                        </details>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- Right Sidebar (Desktop Only) -->
+        <aside class="right-sidebar-container">
+            <RightSidebar />
+        </aside>
+    </div>
+</Layout>
+
+<style>
+    /* 3-Column Grid Layout */
+    .page-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr 280px; /* Left, Middle, Right */
+        gap: 2rem;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+        align-items: start;
+    }
+
+    /* Left Sidebar */
+    .left-sidebar {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+        border-right: 1px solid var(--color-border);
+        padding-right: 1.5rem;
+    }
+
+    /* Right Sidebar */
+    .right-sidebar-container {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+        border-left: 1px solid var(--color-border);
+        padding-left: 1.5rem;
+    }
+
+    /* Main Content */
+    .main-content {
+        width: 100%;
+        min-width: 0;
+    }
+
+    @media (max-width: 1200px) {
+        .page-layout {
+            grid-template-columns: 280px 1fr;
+            max-width: 1000px;
+        }
+        .right-sidebar-container {
+            display: none;
+        }
+        .left-sidebar {
+            padding-right: 1.5rem;
+        }
+    }
+
+    @media (max-width: 900px) {
+        .page-layout {
+            grid-template-columns: 1fr;
+            padding: 1rem;
+        }
+
+        .left-sidebar {
+            position: fixed !important;
+            top: 0 !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            z-index: 1000;
+        }
+
+        .main-content {
+            order: 1;
+        }
+    }
+
+    h1 {
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+
+    /* Categories Styles */
+    /* ... (Rest of existing styles can remain or be re-included if needed to be exhaustive, assuming replace handles block) */
+    .categories-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .category-group {
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 0.5rem;
+        background: var(
+            --color-bg-secondary
+        ); /* Assuming a secondary bg var exists or falling back */
+    }
+
+    .category-group[open] {
+        background: var(--color-bg);
+    }
+
+    .category-name {
+        cursor: pointer;
+        padding: 0.5rem;
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        list-style: none; /* Hide default triangle in some browsers */
+        user-select: none;
+    }
+
+    .category-name::-webkit-details-marker {
+        display: none;
+    }
+
+    .category-name::after {
+        content: "+";
+        margin-left: auto;
+        font-weight: normal;
+        font-size: 1.2rem;
+        color: var(--gray);
+    }
+
+    details[open] .category-name::after {
+        content: "-";
+    }
+
+    .folder-icon {
+        margin-right: 0.5rem;
+    }
+
+    .count {
+        margin-left: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--gray);
+        background: var(--gray-light);
+        padding: 0.1rem 0.4rem;
+        border-radius: 12px;
+        font-weight: normal;
+    }
+
+    .post-list {
+        list-style: none;
+        padding: 0 1rem 1rem 1.5rem;
+        margin: 0;
+        border-top: 1px solid var(--color-border);
+        margin-top: 0.5rem;
+    }
+
+    .post-list li {
+        margin-top: 0.5rem;
+    }
+
+    .post-list a {
+        text-decoration: none;
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: color 0.2s;
+    }
+
+    .post-list a:hover {
+        color: var(--accent);
+    }
+
+    .post-date {
+        font-family: monospace;
+        color: var(--gray);
+        font-size: 0.9em;
+        white-space: nowrap;
+    }
+
+    .post-title {
+        font-weight: 500;
+    }
+</style>

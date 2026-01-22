@@ -1,0 +1,259 @@
+---
+interface Props {
+    title: string;
+    subtitle: string;
+    image: string;
+}
+
+const { title, subtitle, image } = Astro.props;
+---
+
+<section class="hero-section fade-in">
+    <div class="hero-container">
+        <div class="profile-card">
+            <div class="image-wrapper">
+                <img src={image} alt={title} class="profile-image" />
+                <div class="glow"></div>
+            </div>
+            <div class="content">
+                <h1>{title}</h1>
+                <p class="subtitle">{subtitle}</p>
+                <div class="actions">
+                    <a href="#contact" class="btn-primary">Vamos conversar</a>
+                    <a href="#projects" class="btn-secondary">Ver projetos</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="icon">🤖</div>
+                <h3>Robótica</h3>
+                <p>Competições e sistemas inteligentes.</p>
+            </div>
+            <div class="skill-card">
+                <div class="icon">🐍</div>
+                <h3>Python</h3>
+                <p>Data Science e Automação.</p>
+            </div>
+            <div class="skill-card">
+                <div class="icon">📊</div>
+                <h3>B.I.</h3>
+                <p>Dashboards e KPIs em tempo real.</p>
+            </div>
+            <div class="skill-card">
+                <div class="icon">☁️</div>
+                <h3>Data Eng.</h3>
+                <p>Cloud (GCP/AWS) e Pipelines ETL.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hero-section {
+        padding: 4rem 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Background decoration */
+    .hero-section::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle,
+            rgba(59, 130, 246, 0.1) 0%,
+            rgba(0, 0, 0, 0) 70%
+        );
+        z-index: -1;
+        animation: spin 30s linear infinite;
+    }
+
+    @keyframes spin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .hero-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4rem;
+    }
+
+    /* Profile Card */
+    .profile-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 2rem;
+        max-width: 800px;
+    }
+
+    @media (min-width: 768px) {
+        .profile-card {
+            flex-direction: row;
+            text-align: left;
+            gap: 3rem;
+        }
+    }
+
+    .image-wrapper {
+        position: relative;
+        width: 200px;
+        height: 200px;
+    }
+
+    .profile-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--color-bg);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 2;
+    }
+
+    .glow {
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        width: 80%;
+        height: 80%;
+        background: var(--accent);
+        filter: blur(40px);
+        opacity: 0.6;
+        z-index: 1;
+        border-radius: 50%;
+        animation: pulse 4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%,
+        100% {
+            opacity: 0.6;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.8;
+            transform: scale(1.1);
+        }
+    }
+
+    h1 {
+        font-size: 3rem;
+        margin: 0;
+        font-weight: 800;
+        background: linear-gradient(
+            135deg,
+            var(--color-text) 0%,
+            var(--accent) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: -1px;
+    }
+
+    .subtitle {
+        font-size: 1.2rem;
+        color: var(--gray);
+        line-height: 1.6;
+        margin: 1rem 0 2rem;
+    }
+
+    .actions {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    @media (min-width: 768px) {
+        .actions {
+            justify-content: flex-start;
+        }
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 0.8rem 1.5rem;
+        border-radius: 50px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px -5px rgba(59, 130, 246, 0.5);
+    }
+
+    .btn-secondary {
+        background: transparent;
+        color: var(--color-text);
+        border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+        background: var(--color-hover);
+        border-color: var(--color-text);
+    }
+
+    /* Skills Grid */
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        width: 100%;
+    }
+
+    .skill-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--color-border);
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        transition: all 0.4s ease;
+    }
+
+    .skill-card:hover {
+        transform: translateY(-10px) rotate(1deg);
+        background: var(--color-hover);
+        border-color: var(--accent);
+    }
+
+    .icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .skill-card h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+    }
+
+    .skill-card p {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin: 0;
+    }
+</style>

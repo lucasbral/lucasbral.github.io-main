@@ -1,0 +1,216 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/about/Hero.astro";
+import Timeline from "../components/about/Timeline.astro";
+import ProjectCard from "../components/about/ProjectCard.astro";
+
+const timelineItems = [
+    {
+        title: "Engenharia e Análise de Dados",
+        date: "2022 - Hoje",
+        description:
+            "Engenheiro de Dados Júnior, lidando com tecnologias Cloud, ETL e arquitetura de dados modernos.",
+    },
+    {
+        title: "Desenvolvimento de Software Automotivo",
+        date: "2023 - 2024",
+        description:
+            "Especialização em parceria com a Stellantis. Foco em C/C++, Autosar e sistemas embarcados críticos.",
+    },
+    {
+        title: "Excelência Operacional e B.I.",
+        date: "2020 - 2022",
+        description:
+            "Atuação na indústria com foco em redução de perdas, criação de dashboards e análise de KPIs.",
+    },
+    {
+        title: "Pesquisa e Extensão",
+        date: "2017 - 2020",
+        description:
+            "Projetos acadêmicos em parceria com empresas privadas para testes de dispositivos eletrônicos.",
+    },
+    {
+        title: "Eletrônica e Robótica",
+        date: "2015 - 2017",
+        description:
+            "Início da jornada acadêmica e participação em competições de robótica.",
+    },
+];
+---
+
+<Layout
+    title="Sobre Mim - Lucas Sobral"
+    description="Conheça mais sobre Lucas Sobral, Engenheiro e Desenvolvedor."
+    fullWidth={true}
+>
+    <main class="about-page">
+        <Hero
+            title="Lucas Sobral"
+            subtitle="Engenheiro Eletrônico, Mestre em Engenharia de Sistemas e apaixonado por transformar dados em soluções."
+            image="/img/eu.png"
+        />
+
+        <section id="trajectory" class="section-container">
+            <div class="section-header">
+                <h2>Minha Trajetória</h2>
+                <p>
+                    Principais marcos da minha carreira profissional e
+                    acadêmica.
+                </p>
+            </div>
+            <Timeline items={timelineItems} />
+        </section>
+
+        <section id="projects" class="section-container">
+            <div class="section-header">
+                <h2>Projetos Favoritos</h2>
+                <p>Alguns dos trabalhos que desenvolvi com carinho.</p>
+            </div>
+
+            <ProjectCard
+                title="Engenharia de Dados com GCP"
+                subtitle="Google Cloud Platform & Big Data"
+                description="Dashboard no Looker Studio com dados do INMET, tratados com Pandas/Pyspark e Apache Beam na GCP. Um pipeline completo de ponta a ponta."
+                image="/img/data-eng.png"
+            />
+
+            <ProjectCard
+                title="Airflow & Spotify API"
+                subtitle="Automação & ETL"
+                description="Automatização da extração diária das top 50 músicas do Spotify utilizando Apache Airflow e armazenamento NoSQL com MongoDB."
+                image="/img/airflow.png"
+                link="https://github.com/lucasbral/spotify_pipeline"
+                reverse={true}
+            />
+
+            <ProjectCard
+                title="Futscrap"
+                subtitle="Webscraping & Python"
+                description="Script em Python utilizando Selenium e BeautifulSoup para extrair estatísticas detalhadas de jogadores da plataforma Opta Player Stats."
+                image="/img/scrap.png"
+                link="https://github.com/lucasbral/fut_scrap"
+            />
+        </section>
+
+        <section id="contact" class="section-container contact-section">
+            <div class="contact-box">
+                <h2>Vamos Conversar?</h2>
+                <p>
+                    Estou sempre aberto a novas oportunidades e ideias. Entre em
+                    contato!
+                </p>
+                <div class="social-links">
+                    <a
+                        href="mailto:lucasdecarvalhosobral@gmail.com"
+                        class="social-btn email"
+                    >
+                        Email
+                    </a>
+                    <a
+                        href="https://www.linkedin.com/in/lucasbral/"
+                        target="_blank"
+                        class="social-btn linkedin"
+                    >
+                        LinkedIn
+                    </a>
+                    <a
+                        href="https://github.com/lucasbral"
+                        target="_blank"
+                        class="social-btn github"
+                    >
+                        GitHub
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+</Layout>
+
+<style>
+    .about-page {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 0 1rem 4rem 1rem;
+    }
+
+    .section-container {
+        margin-top: 8rem;
+        opacity: 0;
+        animation: fadeIn 1s ease-out forwards;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .section-header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(
+            135deg,
+            var(--color-text) 0%,
+            var(--gray) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .section-header p {
+        color: var(--gray);
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .contact-box {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 30px;
+        padding: 4rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+    }
+
+    .social-btn {
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .social-btn:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .email {
+        background: #ea4335;
+    }
+    .linkedin {
+        background: #0077b5;
+    }
+    .github {
+        background: #333;
+    }
+
+    @keyframes fadeIn {
+        to {
+            opacity: 1;
+        }
+    }
+</style>

@@ -1,0 +1,315 @@
+/* Global Variables & Reset */
+:root {
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* Light Theme */
+    --color-bg: #ffffff;
+    --color-text: #1a1a1a;
+    --color-primary: #3b82f6;
+    --color-secondary: #64748b;
+    --color-border: #e2e8f0;
+    --color-hover: #f1f5f9;
+
+    /* Dimensions */
+    --max-width: 1000px;
+    --header-height: 4rem;
+
+    /* Aliases for Sidebar & Components */
+    --gray: var(--color-secondary);
+    --gray-light: var(--color-hover);
+    --gray-dark: var(--color-text);
+    --accent: var(--color-primary);
+}
+
+html.dark {
+    /* Dark Theme - Premium Black/Slate */
+    --color-bg: #0f172a;
+    --color-text: #e2e8f0;
+    --color-primary: #60a5fa;
+    --color-secondary: #94a3b8;
+    --color-border: #1e293b;
+    --color-hover: #1e293b;
+}
+
+html {
+    font-family: var(--font-sans);
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    overflow-wrap: break-word;
+    /* Prevent long words from causing overflow */
+}
+
+/* Ensure content images are responsive */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+main {
+    flex: 1;
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: inherit;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+}
+
+h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-top: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Specific Component Styles */
+header {
+    height: var(--header-height);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+nav a {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+nav a.active {
+    color: var(--color-primary);
+}
+
+footer {
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--color-secondary);
+    border-top: 1px solid var(--color-border);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+    /* Removes potential inline spacing issues */
+}
+
+/* Code Blocks */
+pre {
+    padding: 1rem;
+    border-radius: 8px;
+    overflow-x: auto;
+    background-color: #1e1e1e !important;
+    /* Force dark bg for code */
+}
+
+/* Premium Utilities */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================
+   Global Layout & Responsiveness
+   ========================================= */
+
+/* The main grid layout for pages with sidebar */
+.page-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 3rem;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0;
+    /* Align left, don't center */
+    padding: 2rem 2rem;
+    /* Add padding to avoid edge hugging too tight */
+    align-items: start;
+}
+
+/* Sticky Sidebar Container */
+.sidebar-container {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+    /* Ensure it doesn't collapse if empty */
+    min-height: 200px;
+}
+
+/* Mobile: Hide Sidebar completely & Stack Layout */
+@media (max-width: 900px) {
+    .page-layout {
+        grid-template-columns: 1fr;
+        /* Single column */
+        padding: 1rem;
+        gap: 1.5rem;
+    }
+
+    .sidebar-container {
+        display: block !important;
+        position: fixed;
+        top: 0;
+        left: -100%;
+        /* Hidden off-canvas */
+        width: 80%;
+        /* Width of the drawer */
+        max-width: 320px;
+        height: 100vh;
+        background: var(--color-bg);
+        z-index: 1000;
+        padding: 2rem 1rem;
+        box-shadow: 4px 0 12px rgba(0, 0, 0, 0.1);
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow-y: auto;
+        margin: 0;
+        /* Reset margin */
+    }
+
+    /* Active State (Sidebar Open) */
+    body.show-sidebar .sidebar-container {
+        left: 0 !important;
+    }
+
+    /* Backdrop Overlay when sidebar is open */
+    body.show-sidebar::after {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 900;
+        backdrop-filter: blur(2px);
+    }
+
+    /* Lock body scroll when menu is open */
+    body.show-sidebar {
+        overflow: hidden;
+    }
+}
+
+/* =========================================
+   Mobile Optimization (New)
+   ========================================= */
+
+@media (max-width: 600px) {
+
+    /* Add padding to the main container to prevent text touching edges */
+    .page-layout {
+        padding: 1rem 1.25rem;
+    }
+
+    /* Fix Grid Overflow: Force children to respect container width */
+    article,
+    .prose,
+    .main-content {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+        overflow-wrap: break-word;
+    }
+
+    /* Reduce Heading Sizes for Mobile */
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    /* Ensure pre/code blocks scroll horizontally */
+    pre {
+        overflow-x: auto;
+        white-space: pre;
+        max-width: 100%;
+        font-size: 0.85rem;
+        border-radius: 4px;
+    }
+
+    /* Ensure images don't overflow */
+    img {
+        max-width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+}

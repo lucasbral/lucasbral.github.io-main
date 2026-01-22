@@ -1,0 +1,131 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Sidebar from "../../components/Sidebar.astro";
+
+export async function getStaticPaths() {
+    const posts = await getCollection("blog");
+    const uniqueCategories = [
+        ...new Set(posts.map((post) => post.data.categories).flat()),
+    ].filter((category): category is string => !!category);
+
+    return uniqueCategories.map((category) => {
+        const filteredPosts = posts.filter((post) =>
+            post.data.categories?.includes(category),
+        );
+        return {
+            params: { category: category.toLowerCase() },
+            props: { category, posts: filteredPosts },
+        };
+    });
+}
+
+const { category, posts } = Astro.props;
+---
+
+<Layout title={`Category: ${category}`} fullWidth={true}>
+    <div class="page-layout">
+        <aside class="sidebar-container">
+            <Sidebar />
+        </aside>
+
+        <div class="main-content">
+            <h1>Category: <span>{category}</span></h1>
+            <ul class="post-list">
+                {
+                    posts
+                        .sort(
+                            (a, b) =>
+                                b.data.date.valueOf() - a.data.date.valueOf(),
+                        )
+                        .map((post) => (
+                            <li>
+                                <a href={`/blog/${post.id}/`}>
+                                    <img
+                                        width={720}
+                                        height={360}
+                                        src={
+                                            typeof post.data.image === "string"
+                                                ? post.data.image
+                                                : post.data.image?.path
+                                        }
+                                        alt=""
+                                    />
+                                    <h4 class="title">{post.data.title}</h4>
+                                    <p class="date">
+                                        <FormattedDate date={post.data.date} />
+                                    </p>
+                                </a>
+                            </li>
+                        ))
+                }
+            </ul>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    /* Layout Grid handled in global.css */
+
+    .main-content h1 {
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+
+    .main-content h1 span {
+        color: var(--accent);
+    }
+
+    .post-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        list-style-type: none;
+        padding: 0;
+    }
+
+    @media (max-width: 720px) {
+        .post-list {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .post-list li {
+        transition: 0.2s ease;
+    }
+
+    .post-list li:hover {
+        transform: translateY(-3px);
+    }
+
+    .post-list img {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+    }
+
+    .post-list a {
+        display: block;
+        text-decoration: none;
+        color: var(--color-text);
+    }
+
+    .title {
+        margin: 0;
+        font-size: 1.25rem;
+        color: var(--color-text);
+    }
+
+    .date {
+        margin: 0;
+        color: var(--color-secondary);
+        font-size: 0.9rem;
+    }
+
+    .post-list li a:hover .title {
+        color: var(--accent);
+    }
+</style>
