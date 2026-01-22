@@ -90,6 +90,21 @@ const timelineItems = [
                 image="/img/scrap.png"
                 link="https://github.com/lucasbral/fut_scrap"
             />
+
+            <ProjectCard
+                title="Streamlit & DuckDB"
+                subtitle="High-Performance Data App"
+                description="Aplicação interativa para análise de dados legados (Firebird/Parquet) usando DuckDB e Streamlit, otimizada para hardware de baixo recurso (2 vCPUs)."
+                image="/img/streamlit-duckdb.png"
+                reverse={true}
+            />
+
+            <ProjectCard
+                title="AWS Serverless Pipeline"
+                subtitle="Lambda, DynamoDB & EventBridge"
+                description="Pipeline de dados serverless automatizado para ingestão de dados da API Yu-Gi-Oh! no DynamoDB com agendamento diário via EventBridge."
+                image="/img/aws-pipeline.png"
+            />
         </section>
 
         <section id="contact" class="section-container contact-section">
@@ -128,9 +143,9 @@ const timelineItems = [
 
 <style>
     .about-page {
-        max-width: 1000px;
+        max-width: 1400px;
         margin: 0 auto;
-        padding: 0 1rem 4rem 1rem;
+        padding: 0 1.5rem 4rem 1.5rem;
     }
 
     .section-container {
